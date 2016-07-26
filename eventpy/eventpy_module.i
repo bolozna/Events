@@ -11,16 +11,12 @@
 %{
 #include "../eventc/events.h"
 #include "../eventc/eventList.h"
-#include "../eventc/spreading.h"
-#include "../eventc/centralities.h"
 #include "../eventc/eventNet.h"
 static int exception_occured=0; 
 %}
 
 %include "../eventc/events.h"
 %include "../eventc/eventList.h"
-%include "../eventc/spreading.h"
-%include "../eventc/centralities.h"
 %include "../eventc/eventNet.h"
 
 //%rename(__str__) Event::getLongEventInformation;
