@@ -9,7 +9,7 @@ For installation, see the README in the parent directory.
 Test suite
 ----------
 
-After installing the library you should run the test suite to see that everything is workign fine:
+After installing the library you should run the test suite to see that everything is working fine:
 
 ```
 python -m eventpy.tests

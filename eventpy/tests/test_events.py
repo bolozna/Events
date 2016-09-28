@@ -1,8 +1,11 @@
+from __future__ import print_function
+
 import unittest
 import eventpy
-import os,tempfile
+import os, tempfile
 
 class TestEvents(unittest.TestCase):
+
     def get_small_eventlist1(self):
         l=eventpy.EventList(5,startTime=0,totalTime=10,time=True)
         l[0]=eventpy.Event(0,1,1)
@@ -92,7 +95,7 @@ class TestEvents(unittest.TestCase):
         self.assertEqual(len(list(l.iterUsers())),2)
         self.assertEqual(len(l.iterUsers().next()),4)
 
-    def test_eventlist_sorting():
+    def test_eventlist_sorting(self):
         pass
 
     def test_eventnet_basics(self):
@@ -135,7 +138,7 @@ class TestEvents(unittest.TestCase):
 
         #write -> read -> see that the result is the same.
         tempdir=tempfile.mkdtemp()
-        print tempdir
+        print(tempdir)
 
         small1_sdt_fn=os.path.join(tempdir,"small1_sdt.txt")
         small1.WriteFile_SourceDestTime(small1_sdt_fn)
@@ -155,6 +158,7 @@ class TestEvents(unittest.TestCase):
         small1_rw.ReadFile_All(small1_all_fn)
         self.assertEqual(small1_rw,small1)
 
+
 def test_events():
     suite = unittest.TestSuite()    
     suite.addTest(TestEvents("test_event_basics"))
@@ -166,7 +170,6 @@ def test_events():
     suite.addTest(TestEvents("test_eventnet_basics"))
 
     unittest.TextTestRunner().run(suite) 
-
 
 
 if __name__ == '__main__':

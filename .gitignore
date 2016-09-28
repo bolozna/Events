@@ -1,0 +1,6 @@
+build/*
+*.pyc
+.idea/*
+eventc/.idea/*
+*.DS_STORE
+eventpy/eventpy_module_wrap.cpp
