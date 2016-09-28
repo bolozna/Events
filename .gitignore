@@ -4,3 +4,11 @@ build/*
 eventc/.idea/*
 *.DS_STORE
 eventpy/eventpy_module_wrap.cpp
+*.cmake
+*Makefile
+*CMakeFiles/
+*Testing/
+*CMakeCache.txt
+eventc/test/basictests/runTests
+*.a
+
