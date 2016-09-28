@@ -1,0 +1,2 @@
+cmake .
+./test/basictests/runTests
