@@ -34,6 +34,11 @@ TEST(TestSuite, aTest) {
     EventList<Event_T> testList2=EventList<Event_T>(0);
     testList2.ReadFile_Binary(testFileName);
 
+    if (remove(testFileName) != 0 ) {
+        cout << "Error while deleting file " << testFileName << endl;
+    }
+
+
     // cout << "Simple event list after writing and reading binary file:" << endl;
     for (int i=0; i < testList2.size; i++) {
         Event_T e1 = testList[i];
@@ -53,7 +58,6 @@ TEST(TestSuite, aTest) {
 
     // cout << "Reading in some SourceDestTime data" << endl;
     testList_file.ReadFile_SourceDestTime(testListFileName);
-
     EXPECT_EQ(testList_file.size, testList.size);
 
 
