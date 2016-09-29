@@ -1,1 +1,1 @@
-cmake . && make testAll && ./test/basictests/testAll
+mkdir -p build && cd build && cmake .. && make testAll && cd .. && ./build/test/testAll

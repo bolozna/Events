@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "../../src/eventList.h"
+#include "../src/eventList.h"
 
 
 TEST(TestSuite, aTest) {

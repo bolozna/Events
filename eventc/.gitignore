@@ -1,1 +1,3 @@
 test/basictests/testAll
+build/*
+test1.bin
