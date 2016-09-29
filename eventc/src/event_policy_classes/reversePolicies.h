@@ -127,4 +127,4 @@ string NoReverse::getShortReverseStr(){
     return string("");
 }
 
-#endif //EVENTC_REVERSEPOLICIES_H
+#endif // EVENTC_REVERSEPOLICIES_H

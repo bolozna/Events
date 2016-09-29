@@ -1,2 +1,1 @@
-cmake .
-./test/basictests/runTests
+cmake . && make testAll && ./test/basictests/testAll

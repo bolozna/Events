@@ -22,15 +22,15 @@ typedef float timestamp;
 #include "event_policy_classes/reversePolicies.h"
 #include "event_policy_classes/timeStampPolicies.h"
 #include "event_policy_classes/indexPolicies.h"
-
+#include "event_policy_classes/kindPolicies.h"
 
 
 using namespace std;
 
 
 /** The main event class. **/
-template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy>
-  class Event : public TimeStampPolicy, public ReversedPolicy, public DurationPolicy, public IndexPolicy
+template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
+  class Event : public TimeStampPolicy, public ReversedPolicy, public DurationPolicy, public IndexPolicy, public KindPolicy
 {
  public:
   nodeindex source;
@@ -50,8 +50,8 @@ template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPo
   nodeindex getSource();
   nodeindex getDest();
   Event(); //Constructor
-  Event( const Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy> &event);//Copy constructor
-  Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy> getReversedEvent();
+  Event( const Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy> &event);//Copy constructor
+  Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy> getReversedEvent();
   string getLongEventInformation();
   string getShortEventInformation();
   static string getEventTypeStr();
@@ -67,42 +67,42 @@ template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPo
   
 };
 
-template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy>
-  bool Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::operator==(const Event & other) const{
+template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
+  bool Event<TimeStampPolicy, ReversedPolicy, DurationPolicy, IndexPolicy, KindPolicy>::operator==(const Event & other) const{
   return (this->source==other.source && this->dest==other.dest && this->isEqualTime(other) && this->isEqualReversed(other) && this->isEqualDuration(other) && this->isEqualIndex(other) );
 }
 
 //function returning the source node of an event
-template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy>
-  nodeindex Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::getSource(){
+template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
+  nodeindex Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy>::getSource(){
   return this->source;
 }
 
 //function returning the destination node of an event
-template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy>
-nodeindex Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::getDest(){
+template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
+nodeindex Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy>::getDest(){
   return this->dest;
 }
 
 //a way to read an event from the_file
-template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy>
-void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::readFromFile_tsd(ifstream &the_file){
+template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
+void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy>::readFromFile_tsd(ifstream &the_file){
   this->readTime(the_file);
   the_file >> this->source;
   the_file >> this->dest;
 }
 
 //another way to read an event from the_file
-template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy>
-void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::readFromFile_sdt(ifstream &the_file){
+template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
+void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy>::readFromFile_sdt(ifstream &the_file){
   the_file >> this->source;
   the_file >> this->dest;
   this->readTime(the_file);
 }
 
 //another way to read an event from the_file
-template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy>
-void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::readFromFile_sdtd(ifstream &the_file){
+template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
+void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy>::readFromFile_sdtd(ifstream &the_file){
   the_file >> this->source;
   the_file >> this->dest;
   this->readTime(the_file);
@@ -110,8 +110,8 @@ void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::readFromF
 }
 
 //another way to read an event from the_file
-template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy>
-void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::readFromFile_all(ifstream &the_file){
+template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
+void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy>::readFromFile_all(ifstream &the_file){
   the_file >> this->source;
   the_file >> this->dest;
   this->readTimeConditional(the_file);
@@ -122,8 +122,8 @@ void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::readFromF
 
 // --- Writing --- 
 
-template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy>
-void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::writeToFile_tsd(ofstream &the_file){
+template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
+void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy>::writeToFile_tsd(ofstream &the_file){
   this->writeTime(the_file);
   the_file << " ";
   the_file << this->source;
@@ -131,8 +131,8 @@ void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::writeToFi
   the_file << this->dest;
 }
 
-template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy>
-void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::writeToFile_sdt(ofstream &the_file){
+template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
+void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy>::writeToFile_sdt(ofstream &the_file){
   the_file << this->source;
   the_file << " ";
   the_file << this->dest;
@@ -140,8 +140,8 @@ void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::writeToFi
   this->writeTime(the_file);
 }
 
-template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy>
-void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::writeToFile_sdtd(ofstream &the_file){
+template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
+void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy>::writeToFile_sdtd(ofstream &the_file){
   the_file << this->source;
   the_file << " ";
   the_file << this->dest;
@@ -151,8 +151,8 @@ void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::writeToFi
   this->writeDuration(the_file);
 }
 
-template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy>
-void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::writeToFile_all(ofstream &the_file){
+template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
+void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy>::writeToFile_all(ofstream &the_file){
   the_file << this->source;
   the_file << " ";
   the_file << this->dest;
@@ -160,34 +160,35 @@ void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::writeToFi
   this->writeReversedConditional(the_file);
   this->writeDurationConditional(the_file);
   this->writeIndexConditional(the_file);
+  this->writeKindConditional(the_file);
 }
 
 // --- Constructors ---
 
 //copy the source and destination of an event to targetEvent
-template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy>
-void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::copyAllButTime(Event& targetEvent){
+template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
+void Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy>::copyAllButTime(Event& targetEvent){
   targetEvent.source=this->source;
   targetEvent.dest=this->dest;
 }
 
 //Constructor
-template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy>
-  Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::Event() : TimeStampPolicy(),ReversedPolicy(),DurationPolicy(),IndexPolicy(){
+template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
+  Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy>::Event() : TimeStampPolicy(),ReversedPolicy(),DurationPolicy(),IndexPolicy(){
 }
 
 //Copy constructor
-template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy>
-  Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::Event( const Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy> &event) : TimeStampPolicy(event),ReversedPolicy(event),DurationPolicy(event),IndexPolicy(event){
+template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
+  Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy>::Event( const Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy> &event) : TimeStampPolicy(event),ReversedPolicy(event),DurationPolicy(event),IndexPolicy(event){
     this->source=event.source;
     this->dest=event.dest;
 }
 
 
 //create the reversed event of the considered event with same characteristics 
-template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy>
-Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy> Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::getReversedEvent(){
-  Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy> newEvent=Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>(*this);
+template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
+Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy> Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy>::getReversedEvent(){
+  Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy> newEvent=Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy>(*this);
   newEvent.toggleReversed();
   newEvent.dest=this->source;
   newEvent.source=this->dest;
@@ -196,16 +197,16 @@ Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy> Event<TimeStamp
 
 
 //print information about the considered event
-template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy>
-string Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::getLongEventInformation(){
+template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
+string Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy>::getLongEventInformation(){
   stringstream s;
   s << "Event(source: " << this->source << ", dest: " << this->dest <<", " << this->getLongTimeStr()<< ", "<< this->getLongReverseStr() << ", " << this->getLongDurationStr() << ", " << this->getLongIndexStr() << ")";
   return s.str();
 }
 
 //print information about the considered event
-template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy>
-string Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::getShortEventInformation(){
+template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
+string Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy>::getShortEventInformation(){
   stringstream s;
   s << "(" << this->source << "," << this->dest;
   string time=this->getShortTimeStr();
@@ -221,53 +222,75 @@ string Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::getShor
 }
 
 //print information about the considered event type
-template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy>
-string Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::getEventTypeStr(){
+template <typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
+string Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy, KindPolicy>::getEventTypeStr(){
   stringstream s;
   s << "(source,dest";
-  const string time=Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::timeTypeStr;
+  const string time=Event<TimeStampPolicy, ReversedPolicy, DurationPolicy, IndexPolicy, KindPolicy>::timeTypeStr;
   if (time.length()!=0) {
     s<<","<<time;
   }
-  const string reverse = Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::reverseTypeStr;
+  const string reverse = Event<TimeStampPolicy, ReversedPolicy, DurationPolicy, IndexPolicy, KindPolicy>::reverseTypeStr;
   if( reverse.length()!=0) {
     s<<","<<reverse;
   }
-  const string duration = Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::durationTypeStr;
-  if(duration.length()!=0){s<<","<<duration;}
-  const string index = Event<TimeStampPolicy,ReversedPolicy,DurationPolicy,IndexPolicy>::indexTypeStr;
-  if(index.length()!=0){s<<","<<index;}
-  s<<")";
+  const string duration = Event<TimeStampPolicy, ReversedPolicy, DurationPolicy, IndexPolicy, KindPolicy>::durationTypeStr;
+  if (duration.length()!=0) {
+    s<<","<<duration;
+  }
+  const string index = Event<TimeStampPolicy, ReversedPolicy, DurationPolicy, IndexPolicy, KindPolicy>::indexTypeStr;
+  if(index.length()!=0) {
+    s << "," << index;
+  }
+  const string eventType = Event<TimeStampPolicy, ReversedPolicy, DurationPolicy, IndexPolicy, KindPolicy>::eventTypeStr;
+  if(index.length()!=0) {
+    s << "," << index;
+  }
+  s << ")";
   return s.str();
 }
 
 
 
 //Systematic names for event types
-typedef Event<NoTimeStamp, NoReverse, NoDuration, NoIndex> Event_;
-typedef Event<TimeStamp, NoReverse, NoDuration, NoIndex> Event_T;
-typedef Event<TimeStamp, Reverse, NoDuration, NoIndex> Event_TR;
-typedef Event<TimeStamp, Reverse, Duration, NoIndex> Event_TRD;
-typedef Event<TimeStamp, Reverse, NoDuration, Index> Event_TRI;
-typedef Event<TimeStamp, Reverse, Duration, Index> Event_TRDI;
-typedef Event<TimeStamp, NoReverse, Duration, NoIndex> Event_TD;
-typedef Event<TimeStamp, NoReverse, Duration, Index> Event_TDI;
-typedef Event<TimeStamp, NoReverse, NoDuration, Index> Event_TI;
-typedef Event<NoTimeStamp, Reverse, NoDuration, NoIndex> Event_R;
-typedef Event<NoTimeStamp, Reverse, Duration, NoIndex> Event_RD;
-typedef Event<NoTimeStamp, Reverse, NoDuration, Index> Event_RI;
-typedef Event<NoTimeStamp, Reverse, Duration, Index> Event_RDI;
-typedef Event<NoTimeStamp, NoReverse, Duration, NoIndex> Event_D;
-typedef Event<NoTimeStamp, NoReverse, Duration, Index> Event_DI;
-typedef Event<NoTimeStamp, NoReverse, NoDuration, Index> Event_I;
+typedef Event<NoTimeStamp, NoReverse, NoDuration, NoIndex, NoKind> Event_;
+typedef Event<TimeStamp, NoReverse, NoDuration, NoIndex, NoKind> Event_T;
+typedef Event<TimeStamp, Reverse, NoDuration, NoIndex, NoKind> Event_TR;
+typedef Event<TimeStamp, Reverse, Duration, NoIndex, NoKind> Event_TRD;
+typedef Event<TimeStamp, Reverse, NoDuration, Index, NoKind> Event_TRI;
+typedef Event<TimeStamp, Reverse, Duration, Index, NoKind> Event_TRDI;
+typedef Event<TimeStamp, NoReverse, Duration, NoIndex, NoKind> Event_TD;
+typedef Event<TimeStamp, NoReverse, Duration, Index, NoKind> Event_TDI;
+typedef Event<TimeStamp, NoReverse, NoDuration, Index, NoKind> Event_TI;
+typedef Event<NoTimeStamp, Reverse, NoDuration, NoIndex, NoKind> Event_R;
+typedef Event<NoTimeStamp, Reverse, Duration, NoIndex, NoKind> Event_RD;
+typedef Event<NoTimeStamp, Reverse, NoDuration, Index, NoKind> Event_RI;
+typedef Event<NoTimeStamp, Reverse, Duration, Index, NoKind> Event_RDI;
+typedef Event<NoTimeStamp, NoReverse, Duration, NoIndex, NoKind> Event_D;
+typedef Event<NoTimeStamp, NoReverse, Duration, Index, NoKind> Event_DI;
+typedef Event<NoTimeStamp, NoReverse, NoDuration, Index, NoKind> Event_I;
+typedef Event<TimeStamp, NoReverse, NoDuration, NoIndex, Kind> Event_TE;
+typedef Event<TimeStamp, Reverse, NoDuration, NoIndex, Kind> Event_TRE;
+typedef Event<TimeStamp, Reverse, Duration, NoIndex, Kind> Event_TRDE;
+typedef Event<TimeStamp, Reverse, NoDuration, Index, Kind> Event_TRIE;
+typedef Event<TimeStamp, Reverse, Duration, Index, Kind> Event_TRDIE;
+typedef Event<TimeStamp, NoReverse, Duration, NoIndex, Kind> Event_TDE;
+typedef Event<TimeStamp, NoReverse, Duration, Index, Kind> Event_TDIE;
+typedef Event<TimeStamp, NoReverse, NoDuration, Index, Kind> Event_TIE;
+typedef Event<NoTimeStamp, Reverse, NoDuration, NoIndex, Kind> Event_RE;
+typedef Event<NoTimeStamp, Reverse, Duration, NoIndex, Kind> Event_RDE;
+typedef Event<NoTimeStamp, Reverse, NoDuration, Index, Kind> Event_RIE;
+typedef Event<NoTimeStamp, Reverse, Duration, Index, Kind> Event_RDIE;
+typedef Event<NoTimeStamp, NoReverse, Duration, NoIndex, Kind> Event_DE;
+typedef Event<NoTimeStamp, NoReverse, Duration, Index, Kind> Event_DIE;
+typedef Event<NoTimeStamp, NoReverse, NoDuration, Index, Kind> Event_IE;
 
 
 //Some simple names for event types
-typedef Event<NoTimeStamp, NoReverse, NoDuration,NoIndex> SimpleEvent;
-typedef Event<TimeStamp, NoReverse, NoDuration,NoIndex> EventWithTime;
-typedef Event<TimeStamp, Reverse, NoDuration,Index> EventWithTimeRev;
-typedef Event<TimeStamp, NoReverse, Duration,NoIndex> EventWithDuration;
-
+typedef Event<NoTimeStamp, NoReverse, NoDuration, NoIndex, NoKind> SimpleEvent;
+typedef Event<TimeStamp, NoReverse, NoDuration,NoIndex, NoKind> EventWithTime;
+typedef Event<TimeStamp, Reverse, NoDuration,Index, NoKind> EventWithTimeRev;
+typedef Event<TimeStamp, NoReverse, Duration, NoIndex, NoKind> EventWithDuration;
 
 
 //Comparing events

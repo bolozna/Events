@@ -1,8 +1,16 @@
-cmake_minimum_required(VERSION 2.8)
+# include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+include_directories(../lib/gtest-1.8.0/include ../lib/gtest-1.8.0/src)
 
-include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+add_executable(testEvents test_event.cpp)
+target_link_libraries(testEvents gtest gtest_main)
 
-add_executable(runTests test_example.cpp)
+add_executable(testEventList test_eventlist.cpp)
+target_link_libraries(testEventList gtest gtest_main)
 
-target_link_libraries(runTests gtest gtest_main)
-add_test(runTests runTests )
+add_executable(testUserIterator test_user_iterator.cpp)
+target_link_libraries(testUserIterator gtest gtest_main)
+
+add_executable(testAll testAll.cpp)
+target_link_libraries(testAll gtest)
+
+

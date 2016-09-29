@@ -1,13 +1,9 @@
-//
-// Created by Rainer Kujala on 28/09/16.
-//
-
 #ifndef EVENTC_DURATIONPOLICIES_H
 #define EVENTC_DURATIONPOLICIES_H
 
 #define DEFAULT_DURATION 0
 
-#include "event.h"
+#include "../event.h"
 
 using namespace std;
 
@@ -26,9 +22,9 @@ class Duration{
   void setDuration(timestamp duration);
   Duration();
   Duration( const Duration &event);
-  basic_string<char, char_traits<char>, allocator<char>> getLongDurationStr();
-  basic_string<char, char_traits<char>, allocator<char>> getShortDurationStr();
-  static const basic_string<char, char_traits<char>, allocator<char>> durationTypeStr;
+  basic_string<char, char_traits<char>, allocator<char> > getLongDurationStr();
+  basic_string<char, char_traits<char>, allocator<char> > getShortDurationStr();
+  static const basic_string<char, char_traits<char>, allocator<char> > durationTypeStr;
 };
 
 class NoDuration{
@@ -37,9 +33,9 @@ class NoDuration{
   void setDuration(timestamp duration);
   NoDuration();
   NoDuration( const NoDuration &event);
-  basic_string<char, char_traits<char>, allocator<char>> getLongDurationStr();
-  basic_string<char, char_traits<char>, allocator<char>> getShortDurationStr();
-  static const basic_string<char, char_traits<char>, allocator<char>> durationTypeStr;
+  basic_string<char, char_traits<char>, allocator<char> > getLongDurationStr();
+  basic_string<char, char_traits<char>, allocator<char> > getShortDurationStr();
+  static const basic_string<char, char_traits<char>, allocator<char> > durationTypeStr;
  protected:
   void readDuration(basic_ifstream<char> &the_file);
   void writeDuration(basic_ofstream<char> &the_file);
@@ -79,19 +75,19 @@ void Duration::setDuration(timestamp duration){
   this->duration=duration;
 }
 
-const string Duration::durationTypeStr = basic_string<char, char_traits<char>, allocator<char>>("duration");
+const string Duration::durationTypeStr = basic_string<char, char_traits<char>, allocator<char> >("duration");
 
 
 
 
 
-basic_string<char, char_traits<char>, allocator<char>> Duration::getLongDurationStr(){
+basic_string<char, char_traits<char>, allocator<char> > Duration::getLongDurationStr(){
   basic_stringstream<char> s;
   s << this->duration;
-  return basic_string<char, char_traits<char>, allocator<char >> ("duration: ") + s.str();
+  return basic_string<char, char_traits<char>, allocator<char> > ("duration: ") + s.str();
 }
 
-basic_string<char, char_traits<char>, allocator<char>> Duration::getShortDurationStr(){
+basic_string<char, char_traits<char>, allocator<char> > Duration::getShortDurationStr(){
   basic_stringstream<char> s;
   s << this->duration;
   return s.str();
@@ -119,15 +115,15 @@ NoDuration::NoDuration(const NoDuration &event){
 void NoDuration::setDuration(timestamp duration){
 }
 
-basic_string<char, char_traits<char>, allocator<char>> NoDuration::getLongDurationStr(){
-  return basic_string<char, char_traits<char>, allocator<char >> ("no duration");
+basic_string<char, char_traits<char>, allocator<char> > NoDuration::getLongDurationStr(){
+  return basic_string<char, char_traits<char>, allocator<char> > ("no duration");
 }
 
-basic_string<char, char_traits<char>, allocator<char>> NoDuration::getShortDurationStr(){
-  return basic_string<char, char_traits<char>, allocator<char >> ("");
+basic_string<char, char_traits<char>, allocator<char> > NoDuration::getShortDurationStr(){
+  return basic_string<char, char_traits<char>, allocator<char> > ("");
 }
 
-const string NoDuration::durationTypeStr = basic_string<char, char_traits<char>, allocator<char>>("");
+const string NoDuration::durationTypeStr = basic_string<char, char_traits<char>, allocator<char> >("");
 
 
-#endif //EVENTC_DURATIONPOLICIES_H
+#endif // EVENTC_DURATIONPOLICIES_H

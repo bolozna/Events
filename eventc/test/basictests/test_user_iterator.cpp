@@ -1,28 +1,25 @@
+#include "gtest/gtest.h"
 #include "../../src/eventList.h"
 
-char * testListFileName= (char *) "../../../eventpy/data/eventlist_small1_sdt.txt";
 
-int main(int argc, char *argv[]){
-  EventList<Event_TR> testList=EventList<Event_TR>(0);
-  testList.ReadFile_SourceDestTime(testListFileName);
-  testList.AddReversed();
+TEST(UserIteratorTest, Basics) {
+    char *testListFileName = (char *) "../eventpy/data/eventlist_small1_sdt.txt";
 
-  testList.Sort_SourceTime();
-  
-  for (int i=0;i<testList.size;i++){
-    cout << i<< ": " << testList[i].getLongEventInformation()<< endl;
-  }
+    EventList<Event_TR> testList = EventList<Event_TR>(0);
+    testList.ReadFile_SourceDestTime(testListFileName);
+    testList.AddReversed();
+    testList.Sort_SourceTime();
 
-  
-  for(EventList<Event_TR>::userIterator uiter=testList.iterUsers();uiter!=testList.end();uiter++){
-    cout << uiter.user << endl;
-    for(EventList<Event_TR>::userEventIterator ueiter=*uiter;
-	ueiter!=uiter.end();
-	ueiter++){
-      Event_TR event= *ueiter;
-      cout << event.getLongEventInformation() << endl;
+    for (int i = 0; i < testList.size; i++) {
+        // cout << i << ": " << testList[i].getLongEventInformation() << endl;
     }
-  }
-  
-  return 1;
-}
+
+    for (EventList<Event_TR>::userIterator uiter = testList.iterUsers(); uiter != testList.end(); uiter++) {
+        // cout << uiter.user << endl;
+        for (EventList<Event_TR>::userEventIterator ueiter = *uiter; ueiter != uiter.end(); ueiter++) {
+            Event_TR event = *ueiter;
+            // cout << event.getLongEventInformation() << endl;
+        }
+    }
+
+};
