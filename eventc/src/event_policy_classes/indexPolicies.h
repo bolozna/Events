@@ -5,6 +5,8 @@
 #ifndef EVENTC_INDEXPOLICIES_H
 #define EVENTC_INDEXPOLICIES_H
 
+#define NOINDEX 0
+
 /** Policy classes for storing index. **/
 
 #include <stdlib.h>
@@ -16,7 +18,7 @@
 
 #define eventindex unsigned
 
-#define NOINDEX 0
+
 
 
 class Index{

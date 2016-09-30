@@ -9,6 +9,7 @@ eventpy/eventpy_module_wrap.cpp
 *CMakeFiles/
 *Testing/
 *CMakeCache.txt
-eventc/test/basictests/runTests
 *.a
+eventpy/_eventpy_module.so
+eventpy/eventpy_module.py
 

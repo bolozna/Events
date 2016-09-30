@@ -11,12 +11,24 @@
 #include "../eventc/src/event.h"
 #include "../eventc/src/eventList.h"
 #include "../eventc/src/eventNet.h"
+#include "../eventc/src/event_policy_classes/durationPolicies.h"
+#include "../eventc/src/event_policy_classes/timeStampPolicies.h"
+#include "../eventc/src/event_policy_classes/reversePolicies.h"
+#include "../eventc/src/event_policy_classes/timeStampPolicies.h"
+#include "../eventc/src/event_policy_classes/indexPolicies.h"
+#include "../eventc/src/event_policy_classes/kindPolicies.h"
 static int exception_occured=0;
 %}
 
 %include "../eventc/src/event.h"
 %include "../eventc/src/eventList.h"
 %include "../eventc/src/eventNet.h"
+%include "../eventc/src/event_policy_classes/durationPolicies.h"
+%include "../eventc/src/event_policy_classes/timeStampPolicies.h"
+%include "../eventc/src/event_policy_classes/reversePolicies.h"
+%include "../eventc/src/event_policy_classes/timeStampPolicies.h"
+%include "../eventc/src/event_policy_classes/indexPolicies.h"
+%include "../eventc/src/event_policy_classes/kindPolicies.h"
 
 //%rename(__str__) Event::getLongEventInformation;
 %extend Event {
@@ -31,22 +43,22 @@ static int exception_occured=0;
 };
 
 
-%template(Event_) Event<NoTimeStamp,NoReverse,NoDuration,NoIndex, NoKind>;
-%template(Event_T) Event<TimeStamp,NoReverse,NoDuration,NoIndex, NoKind>;
-%template(Event_TR) Event<TimeStamp,Reverse,NoDuration,NoIndex, NoKind>;
-%template(Event_TRD) Event<TimeStamp,Reverse,Duration,NoIndex, NoKind>;
-%template(Event_TRI) Event<TimeStamp,Reverse,NoDuration,Index, NoKind>;
-%template(Event_TRDI) Event<TimeStamp,Reverse,Duration,Index, NoKind>;
-%template(Event_TD) Event<TimeStamp,NoReverse,Duration,NoIndex, NoKind>;
-%template(Event_TDI) Event<TimeStamp,NoReverse,Duration,Index, NoKind>;
-%template(Event_TI) Event<TimeStamp,NoReverse,NoDuration,Index, NoKind>;
-%template(Event_R) Event<NoTimeStamp,Reverse,NoDuration,NoIndex, NoKind>;
-%template(Event_RD) Event<NoTimeStamp,Reverse,Duration,NoIndex, NoKind>;
-%template(Event_RI) Event<NoTimeStamp,Reverse,NoDuration,Index, NoKind>;
-%template(Event_RDI) Event<NoTimeStamp,Reverse,Duration,Index, NoKind>;
-%template(Event_D) Event<NoTimeStamp,NoReverse,Duration,NoIndex, NoKind>;
-%template(Event_DI) Event<NoTimeStamp,NoReverse,Duration,Index, NoKind>;
-%template(Event_I) Event<NoTimeStamp,NoReverse,NoDuration,Index, NoKind>;
+%template(Event_) Event<NoTimeStamp,NoReverse,NoDuration,NoIndex,NoKind>;
+%template(Event_T) Event<TimeStamp,NoReverse,NoDuration,NoIndex,NoKind>;
+%template(Event_TR) Event<TimeStamp,Reverse,NoDuration,NoIndex,NoKind>;
+%template(Event_TRD) Event<TimeStamp,Reverse,Duration,NoIndex,NoKind>;
+%template(Event_TRI) Event<TimeStamp,Reverse,NoDuration,Index,NoKind>;
+%template(Event_TRDI) Event<TimeStamp,Reverse,Duration,Index,NoKind>;
+%template(Event_TD) Event<TimeStamp,NoReverse,Duration,NoIndex,NoKind>;
+%template(Event_TDI) Event<TimeStamp,NoReverse,Duration,Index,NoKind>;
+%template(Event_TI) Event<TimeStamp,NoReverse,NoDuration,Index,NoKind>;
+%template(Event_R) Event<NoTimeStamp,Reverse,NoDuration,NoIndex,NoKind>;
+%template(Event_RD) Event<NoTimeStamp,Reverse,Duration,NoIndex,NoKind>;
+%template(Event_RI) Event<NoTimeStamp,Reverse,NoDuration,Index,NoKind>;
+%template(Event_RDI) Event<NoTimeStamp,Reverse,Duration,Index,NoKind>;
+%template(Event_D) Event<NoTimeStamp,NoReverse,Duration,NoIndex,NoKind>;
+%template(Event_DI) Event<NoTimeStamp,NoReverse,Duration,Index,NoKind>;
+%template(Event_I) Event<NoTimeStamp,NoReverse,NoDuration,Index,NoKind>;
 %template(Event_K) Event<NoTimeStamp,NoReverse,NoDuration,NoIndex,Kind>;
 %template(Event_TK) Event<TimeStamp,NoReverse,NoDuration,NoIndex,Kind>;
 %template(Event_TRK) Event<TimeStamp,Reverse,NoDuration,NoIndex,Kind>;
@@ -146,6 +158,23 @@ TEMPLATE_WRAP(Event_RDI,_RDI)
 TEMPLATE_WRAP(Event_D,_D)
 TEMPLATE_WRAP(Event_DI,_DI)
 TEMPLATE_WRAP(Event_I,_I)
+
+TEMPLATE_WRAP(Event_K,_K)
+TEMPLATE_WRAP(Event_TK,_TK)
+TEMPLATE_WRAP(Event_TRK,_TRK)
+TEMPLATE_WRAP(Event_TRDK,_TRDK)
+TEMPLATE_WRAP(Event_TRIK,_TRIK)
+TEMPLATE_WRAP(Event_TRDIK,_TRDIK)
+TEMPLATE_WRAP(Event_TDK,_TDK)
+TEMPLATE_WRAP(Event_TDIK,_TDIK)
+TEMPLATE_WRAP(Event_TIK,_TIK)
+TEMPLATE_WRAP(Event_RK,_RK)
+TEMPLATE_WRAP(Event_RDK,_RDK)
+TEMPLATE_WRAP(Event_RIK,_RIK)
+TEMPLATE_WRAP(Event_RDIK,_RDIK)
+TEMPLATE_WRAP(Event_DK,_DK)
+TEMPLATE_WRAP(Event_DIK,_DIK)
+TEMPLATE_WRAP(Event_IK,_IK)
 
 
 

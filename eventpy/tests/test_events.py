@@ -75,7 +75,7 @@ class TestEvents(unittest.TestCase):
         l = eventpy.EventList(2, startTime=0, totalTime=10, duration=True)
         e = eventpy.Event(source=0, dest=1, time=1, duration=2)
 
-        self.assertEqual(len(l), 1)
+        self.assertEqual(len(l), 2)
         self.assertRaises(Exception, lambda _: l[2])
 
         def sete(ind):

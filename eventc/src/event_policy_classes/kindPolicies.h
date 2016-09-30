@@ -5,6 +5,8 @@
 #ifndef EVENTC_KINDPOLICIES_H
 #define EVENTC_KINDPOLICIES_H
 
+#define kind_t int
+
 #include "../event.h"
 
 using namespace std;
@@ -19,8 +21,6 @@ using namespace std;
  *  The word "kind" is used instead of "type" in order to avoid confusion.
  */
 
-
-#define kind_t int
 
 class Kind{
 private:
