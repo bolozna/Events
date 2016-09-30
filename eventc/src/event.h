@@ -301,6 +301,7 @@ typedef Event<NoTimeStamp, Reverse, Duration, Index, NoKind> Event_RDI;
 typedef Event<NoTimeStamp, NoReverse, Duration, NoIndex, NoKind> Event_D;
 typedef Event<NoTimeStamp, NoReverse, Duration, Index, NoKind> Event_DI;
 typedef Event<NoTimeStamp, NoReverse, NoDuration, Index, NoKind> Event_I;
+typedef Event<NoTimeStamp, NoReverse, NoDuration, NoIndex, NoKind> Event_K;
 typedef Event<TimeStamp, NoReverse, NoDuration, NoIndex, Kind> Event_TK;
 typedef Event<TimeStamp, Reverse, NoDuration, NoIndex, Kind> Event_TRK;
 typedef Event<TimeStamp, Reverse, Duration, NoIndex, Kind> Event_TRDK;
