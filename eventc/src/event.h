@@ -26,7 +26,6 @@ typedef float timestamp;
 
 using namespace std;
 
-
 /** The main event class. **/
 template<typename TimeStampPolicy, typename ReversedPolicy, typename DurationPolicy, typename IndexPolicy, typename KindPolicy>
 class Event
@@ -272,9 +271,9 @@ string Event<TimeStampPolicy, ReversedPolicy, DurationPolicy, IndexPolicy, KindP
     if (index.length() != 0) {
         s << "," << index;
     }
-    const string eventType = Event<TimeStampPolicy, ReversedPolicy, DurationPolicy, IndexPolicy, KindPolicy>::eventTypeStr;
-    if (index.length() != 0) {
-        s << "," << index;
+    const string kind = Event<TimeStampPolicy, ReversedPolicy, DurationPolicy, IndexPolicy, KindPolicy>::kindTypeStr;
+    if (kind.length() != 0) {
+        s << "," << kind;
     }
     s << ")";
     return s.str();

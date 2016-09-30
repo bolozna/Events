@@ -4,20 +4,19 @@
 
 %include "exception.i"
 
-#define nodeindex unsigned
 #define eventindex unsigned
 %include "carrays.i"
 %include <std_string.i>
 %{
-#include "../eventc/events.h"
-#include "../eventc/eventList.h"
-#include "../eventc/eventNet.h"
-static int exception_occured=0; 
+#include "../eventc/src/event.h"
+#include "../eventc/src/eventList.h"
+#include "../eventc/src/eventNet.h"
+static int exception_occured=0;
 %}
 
-%include "../eventc/events.h"
-%include "../eventc/eventList.h"
-%include "../eventc/eventNet.h"
+%include "../eventc/src/event.h"
+%include "../eventc/src/eventList.h"
+%include "../eventc/src/eventNet.h"
 
 //%rename(__str__) Event::getLongEventInformation;
 %extend Event {
@@ -32,22 +31,38 @@ static int exception_occured=0;
 };
 
 
-%template(Event_) Event<NoTimeStamp,NoReverse,NoDuration,NoIndex>;
-%template(Event_T) Event<TimeStamp,NoReverse,NoDuration,NoIndex>;
-%template(Event_TR) Event<TimeStamp,Reverse,NoDuration,NoIndex>;
-%template(Event_TRD) Event<TimeStamp,Reverse,Duration,NoIndex>;
-%template(Event_TRI) Event<TimeStamp,Reverse,NoDuration,Index>;
-%template(Event_TRDI) Event<TimeStamp,Reverse,Duration,Index>;
-%template(Event_TD) Event<TimeStamp,NoReverse,Duration,NoIndex>;
-%template(Event_TDI) Event<TimeStamp,NoReverse,Duration,Index>;
-%template(Event_TI) Event<TimeStamp,NoReverse,NoDuration,Index>;
-%template(Event_R) Event<NoTimeStamp,Reverse,NoDuration,NoIndex>;
-%template(Event_RD) Event<NoTimeStamp,Reverse,Duration,NoIndex>;
-%template(Event_RI) Event<NoTimeStamp,Reverse,NoDuration,Index>;
-%template(Event_RDI) Event<NoTimeStamp,Reverse,Duration,Index>;
-%template(Event_D) Event<NoTimeStamp,NoReverse,Duration,NoIndex>;
-%template(Event_DI) Event<NoTimeStamp,NoReverse,Duration,Index>;
-%template(Event_I) Event<NoTimeStamp,NoReverse,NoDuration,Index>;
+%template(Event_) Event<NoTimeStamp,NoReverse,NoDuration,NoIndex, NoKind>;
+%template(Event_T) Event<TimeStamp,NoReverse,NoDuration,NoIndex, NoKind>;
+%template(Event_TR) Event<TimeStamp,Reverse,NoDuration,NoIndex, NoKind>;
+%template(Event_TRD) Event<TimeStamp,Reverse,Duration,NoIndex, NoKind>;
+%template(Event_TRI) Event<TimeStamp,Reverse,NoDuration,Index, NoKind>;
+%template(Event_TRDI) Event<TimeStamp,Reverse,Duration,Index, NoKind>;
+%template(Event_TD) Event<TimeStamp,NoReverse,Duration,NoIndex, NoKind>;
+%template(Event_TDI) Event<TimeStamp,NoReverse,Duration,Index, NoKind>;
+%template(Event_TI) Event<TimeStamp,NoReverse,NoDuration,Index, NoKind>;
+%template(Event_R) Event<NoTimeStamp,Reverse,NoDuration,NoIndex, NoKind>;
+%template(Event_RD) Event<NoTimeStamp,Reverse,Duration,NoIndex, NoKind>;
+%template(Event_RI) Event<NoTimeStamp,Reverse,NoDuration,Index, NoKind>;
+%template(Event_RDI) Event<NoTimeStamp,Reverse,Duration,Index, NoKind>;
+%template(Event_D) Event<NoTimeStamp,NoReverse,Duration,NoIndex, NoKind>;
+%template(Event_DI) Event<NoTimeStamp,NoReverse,Duration,Index, NoKind>;
+%template(Event_I) Event<NoTimeStamp,NoReverse,NoDuration,Index, NoKind>;
+%template(Event_K) Event<NoTimeStamp,NoReverse,NoDuration,NoIndex,Kind>;
+%template(Event_TK) Event<TimeStamp,NoReverse,NoDuration,NoIndex,Kind>;
+%template(Event_TRK) Event<TimeStamp,Reverse,NoDuration,NoIndex,Kind>;
+%template(Event_TRDK) Event<TimeStamp,Reverse,Duration,NoIndex,Kind>;
+%template(Event_TRIK) Event<TimeStamp,Reverse,NoDuration,Index,Kind>;
+%template(Event_TRDIK) Event<TimeStamp,Reverse,Duration,Index,Kind>;
+%template(Event_TDK) Event<TimeStamp,NoReverse,Duration,NoIndex,Kind>;
+%template(Event_TDIK) Event<TimeStamp,NoReverse,Duration,Index,Kind>;
+%template(Event_TIK) Event<TimeStamp,NoReverse,NoDuration,Index,Kind>;
+%template(Event_RK) Event<NoTimeStamp,Reverse,NoDuration,NoIndex,Kind>;
+%template(Event_RDK) Event<NoTimeStamp,Reverse,Duration,NoIndex,Kind>;
+%template(Event_RIK) Event<NoTimeStamp,Reverse,NoDuration,Index,Kind>;
+%template(Event_RDIK) Event<NoTimeStamp,Reverse,Duration,Index,Kind>;
+%template(Event_DK) Event<NoTimeStamp,NoReverse,Duration,NoIndex,Kind>;
+%template(Event_DIK) Event<NoTimeStamp,NoReverse,Duration,Index,Kind>;
+%template(Event_IK) Event<NoTimeStamp,NoReverse,NoDuration,Index,Kind>;
 
 %define TEMPLATE_WRAP(T,postfix)
 %ignore EventList<T>::DAG;
