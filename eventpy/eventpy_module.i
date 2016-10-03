@@ -8,15 +8,7 @@
 %include "carrays.i"
 %include <std_string.i>
 %{
-#include "../eventc/src/event.h"
-#include "../eventc/src/eventList.h"
-#include "../eventc/src/eventNet.h"
-#include "../eventc/src/event_policy_classes/durationPolicies.h"
-#include "../eventc/src/event_policy_classes/timeStampPolicies.h"
-#include "../eventc/src/event_policy_classes/reversePolicies.h"
-#include "../eventc/src/event_policy_classes/timeStampPolicies.h"
-#include "../eventc/src/event_policy_classes/indexPolicies.h"
-#include "../eventc/src/event_policy_classes/kindPolicies.h"
+#include "../eventc/src/eventc.h"
 static int exception_occured=0;
 %}
 
@@ -41,6 +33,9 @@ static int exception_occured=0;
          return $self->getShortEventInformation();
     }
 };
+
+
+
 
 
 %template(Event_) Event<NoTimeStamp,NoReverse,NoDuration,NoIndex,NoKind>;
