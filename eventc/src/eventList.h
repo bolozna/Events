@@ -24,6 +24,18 @@
 #include "event_policy_classes/timeStampPolicies.h"
 
 
+template<class ElementType>
+void shuffle_vector(vector<ElementType> &v, RandNumGen<> &r){
+  for(size_t i = 0; i < v.size()-1;i++){
+    size_t j=i+rand()%(v.size()-i);
+    ElementType tempValue;
+    tempValue=v[i];
+    v[i]=v[j];
+    v[j]=tempValue;
+  }
+}
+
+
 template<class EventType> 
 class EventList{
  private:
@@ -67,6 +79,7 @@ class EventList{
   void Shuffle_AddOffset(int seed);
   void Shuffle_LinkSequence(int seed);
   void Shuffle_Time();
+  void Shuffle_LinkIETsKeepFirst(int seed);
 
   //Printing
   void PrintEvents();
@@ -153,6 +166,7 @@ class EventList{
   
 };
 
+
 //---------
 
 
@@ -229,6 +243,51 @@ void EventList<EventType>::SwapLinkSequences(size_t index1,size_t index2){
    }
      
 }
+
+template<class EventType> 
+void EventList<EventType>::Shuffle_LinkIETsKeepFirst(int seed){
+  //Check that the eventlist is properly sorted.
+  if (!this->IsSorted_SourceDestTime()) this->Sort_SourceDestTime();
+  
+  RandNumGen<> rands(seed);
+  timestamp timeWindow=this->GetTimeWindowSize();
+
+  //iterate through all the events in all edges.
+  int i=0;
+  while(i<events.size()){
+
+    //Build IET vector for each link
+    EventType currentEdge=this->events[i];
+    vector<timestamp> iets;
+    timestamp prevTime;
+    int j=i;
+    while(this->events[j].source==currentEdge.source && this->events[j].dest==currentEdge.dest && j<events.size()){
+      timestamp newTime=this->events[j].getTime();
+      if (j!=i){
+	iets.push_back(prevTime-newTime);
+      }
+      prevTime=newTime;
+      j++;
+    }
+
+    //Randomize the IET vector order
+    shuffle_vector<timestamp>(iets, rands);
+
+    //Change the times to follow the randomized IET vector
+    prevTime=this->events[i].getTime();
+    i++; //for the first event we keep the time
+
+    int ietIndex=0;
+    while(this->events[i].source==currentEdge.source && this->events[i].dest==currentEdge.dest && i<events.size()){
+      prevTime+=iets[ietIndex];
+      this->events[i].setTime(prevTime);
+      ietIndex++;
+      i++;
+    }
+  }
+}
+
+
  
 
 template<class EventType> 
