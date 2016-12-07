@@ -140,13 +140,15 @@ class EventList{
     eventIteratorType eventIteratorEnd;
     eventIteratorType eventIterator;           
     nodeindex user;    
-  userIterator(eventIteratorType begin, eventIteratorType end) : eventIterator(begin), eventIteratorEnd(end){this->user=(*(this->eventIterator)).source;}
+    userIterator(eventIteratorType begin, eventIteratorType end) : eventIterator(begin), eventIteratorEnd(end){this->user=(*(this->eventIterator)).source;}
     userEventIterator operator*(){return userEventIterator(this); }
     userIterator operator++() {
       while((*this->eventIterator).source==user && this->eventIterator != this->eventIteratorEnd) {
         this->eventIterator++;
       } //This should be optimized away with branch prediction? Or should we have additional if statement?
-      this->user=(*this->eventIterator).source;
+      if (this->eventIterator !=  this->eventIteratorEnd){ 
+	this->user=(*this->eventIterator).source;
+      }
       return *this;
     }
     userIterator operator++(int dummy){
@@ -155,7 +157,17 @@ class EventList{
     }
     bool finished(){return this->eventIteratorEnd == this->eventIterator;}
     bool operator!=(eventIteratorType other) { return this->eventIterator!=other; }
-    eventIteratorType& end(){if ( (*(this->eventIterator)).source!=this->user  ){return this->eventIterator; }else{return this->eventIteratorEnd;}}
+    eventIteratorType& end(){
+      if (this->eventIterator==this->eventIteratorEnd){
+	return this->eventIteratorEnd;
+      }
+      
+      if ( (*(this->eventIterator)).source!=this->user  ){
+	return this->eventIterator; }
+      else{
+	return this->eventIteratorEnd;
+      }
+    }
   };
 
   eventIteratorType end(){return this->events.end();}
