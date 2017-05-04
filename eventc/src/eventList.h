@@ -78,7 +78,8 @@ class EventList{
   //Shuffling
   void Shuffle_AddOffset(int seed);
   void Shuffle_LinkSequence(int seed);
-  void Shuffle_Time();
+  void Shuffle_AllButTime(int seed);
+  void Shuffle_Time(int seed);
   void Shuffle_LinkIETsKeepFirst(int seed);
 
   //Printing
@@ -179,7 +180,7 @@ class EventList{
 };
 
 
-//---------
+//--------- Shuffling methods
 
 
 template<class EventType> 
@@ -300,7 +301,54 @@ void EventList<EventType>::Shuffle_LinkIETsKeepFirst(int seed){
 }
 
 
+template<class EventType> 
+void EventList<EventType>::Shuffle_AllButTime(int seed){
+  /*
+    Time shuffling of events. 
+    In practice this is done by shuffling everything else but the times. This way
+    if the times are sorted, they are also sorted after this shuffling.
+   */
+
+  RandNumGen<> rands(seed);
+  timestamp timeWindow=this->GetTimeWindowSize();
+  
+
+  for(size_t i = 0; i < this->size-1;i++){
+    size_t j=i+rands.next(this->size-i);
+    EventType tempEvent = EventType();
+    this->events[i].copyAllButTime(tempEvent);
+    this->events[j].copyAllButTime(this->events[i]);
+    tempEvent.copyAllButTime(this->events[j]);
+  }
  
+}
+
+
+template<class EventType> 
+void EventList<EventType>::Shuffle_Time(int seed){
+  /*
+    Time shuffling of events. 
+   */
+
+  RandNumGen<> rands(seed);
+  timestamp timeWindow=this->GetTimeWindowSize();
+  
+
+  for(size_t i = 0; i < this->size-1;i++){
+    size_t j=i+rands.next(this->size-i);
+    timestamp tempTime=this->events[i].getTime();
+    this->events[i].setTime(this->events[j].getTime());
+    this->events[j].setTime(tempTime);
+  }
+ 
+}
+
+
+
+
+
+//--------- Constructor
+
 
 template<class EventType> 
 EventList<EventType>::EventList(size_t size,timestamp startTime,timestamp totalTime) : events(size)
@@ -662,23 +710,6 @@ int EventList<EventType>::GetNumberOfNodes(){
 
 }
 
-template<class EventType> 
-void EventList<EventType>::Shuffle_Time(){
-  /*
-    Time shuffling of events. 
-    In practice this is done by shuffling everything else but the times. This way
-    if the times are sorted, they are also sorted after this shuffling.
-   */
-
-   for(size_t i = 0; i < this->size-1;i++){
-    size_t j=i+rand()%(this->size-i);
-    EventType tempEvent = EventType();
-    this->events[i].copyAllButTime(tempEvent);
-    this->events[j].copyAllButTime(this->events[i]);
-    tempEvent.copyAllButTime(this->events[j]);
-  }
- 
-}
 
 template<class EventType> 
 void EventList<EventType>::Sort_SourceDestTime(){
