@@ -311,36 +311,64 @@ def get_inter_event_times_nodes(elist):
 
 
 features_all={}
+feature_symbols={}
 
-features_topological={r"G_{stat}":get_unweighted_network,
-                      r"k":get_degrees,
-                      r"c":get_node_ccs,
-                      r"M_{stat}":get_number_of_links,
-                      r"N^*_{stat}":get_number_of_active_nodes,
-                      r"\lambda_1":is_connected}
+#topological
+features_topological={"unweighted_network":get_unweighted_network,
+                      "degrees":get_degrees,
+                      "node_ccs":get_node_ccs,
+                      "number_of_links":get_number_of_links,
+                      "number_of_active_nodes":get_number_of_active_nodes,
+                      "is_connected":is_connected}
 features_all.update(features_topological)
+feature_symbols.update({"unweighted_network": r"G_{stat}",
+                        "degrees":r"k",
+                        "node_ccs":r"c",
+                        "number_of_links":r"M_{stat}",
+                        "number_of_active_nodes":r"N^*_{stat}",
+                        "is_connected":r"\lambda_1"})
 
 
-features_aggregated={r"n":get_number_of_contacts_on_links,
-                     r"w":get_total_duration_on_links,
-                     r"a":get_number_of_contacts_on_nodes,
-                     r"s":get_total_duration_on_nodes}
+#aggregated
+features_aggregated={"number_of_contacts_on_links":get_number_of_contacts_on_links,
+                     "total_duration_on_links":get_total_duration_on_links,
+                     "number_of_contacts_on_nodes":get_number_of_contacts_on_nodes,
+                     "total_duration_on_nodes":get_total_duration_on_nodes}
 features_all.update(features_aggregated)
+feature_symbols.update({"number_of_contacts_on_links":{r"n"},
+                        "total_duration_on_links":r"w",
+                        "number_of_contacts_on_nodes":r"a",
+                        "total_duration_on_nodes":r"s"})
 
 
-features_temporal={r"G_t":get_snapshots,
-                   r"\Theta":get_times_links,
-                   r"t_1":get_first_times_links,
-                   r"t_w":get_last_times_links,
-                   r"\tau":get_durations_links,
-                   r"\Delta\tau":get_inter_event_times_links,
-                   r"\Phi":get_times_nodes,
-                   r"\alpha":get_durations_nodes,
-                   r"\Delta\alpha":get_inter_event_times_nodes,
-                   r"t^n_1":get_first_times_nodes,
-                   r"t^n_w":get_last_times_nodes,
-                   r"k^t":get_snapshot_degrees,
-                   r"M_t":get_snapshot_number_of_links,
-                   r"N^*_t":get_snapshot_number_of_nodes}
+#temporal
+features_temporal={"snapshots":get_snapshots,
+                   "times_links":get_times_links,
+                   "first_times_links":get_first_times_links,
+                   "last_times_links":get_last_times_links,
+                   "durations_links":get_durations_links,
+                   "inter_event_times_links":get_inter_event_times_links,
+                   "times_nodes":get_times_nodes,
+                   "durations_nodes":get_durations_nodes,
+                   "inter_event_times_nodes":get_inter_event_times_nodes,
+                   "first_times_nodes":get_first_times_nodes,
+                   "last_times_nodes":get_last_times_nodes,
+                   "snapshot_degrees":get_snapshot_degrees,
+                   "snapshot_number_of_links":get_snapshot_number_of_links,
+                   "snapshot_number_of_nodes":get_snapshot_number_of_nodes}
 features_all.update(features_temporal)
+feature_symbols.update({"snapshots":r"G_t",
+                        "times_links":r"\Theta",
+                        "first_times_links":r"t_1",
+                        "last_times_links":r"t_w",
+                        "durations_links":r"\tau",
+                        "inter_event_times_links":r"\Delta\tau",
+                        "times_nodes":r"\Phi",
+                        "durations_nodes":r"\alpha",
+                        "inter_event_times_nodes":r"\Delta\alpha",
+                        "first_times_nodes":r"t^n_1",
+                        "last_times_nodes":r"t^n_w",
+                        "snapshot_degrees":r"k^t",
+                        "snapshot_number_of_links":r"M_t",
+                        "snapshot_number_of_nodes":r"N^*_t"})
 
