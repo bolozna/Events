@@ -23,7 +23,7 @@ class SequenceFeature(object):
         else:
             return self.feature.itervalues()
     def avg(self):
-        return sum(self._get_val_iterator())/float(len(feature))
+        return sum(self._get_val_iterator())/float(len(self.feature))
     def dist(self):
         d={}
         for element in self._get_val_iterator():
@@ -36,11 +36,11 @@ class SequenceFeature(object):
         return d
             
 class SequenceOfSequencesFeature(SequenceFeature):
-    def _flat_seq():
+    def _flat_seq(self):
         """Flatten (concatenate) all sequences."""
         l=[]
         for seq in self._get_val_iterator():
-            for element in seq._get_val_iterator():
+            for element in SequenceFeature(seq)._get_val_iterator():
                 l.append(element)
         return l
     def seq_of_dist(self):
