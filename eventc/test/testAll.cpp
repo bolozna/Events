@@ -8,6 +8,7 @@
 #include "test_event.cpp"
 #include "test_eventlist.cpp"
 #include "test_user_iterator.cpp"
+#include "test_shuffling.cpp"
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
