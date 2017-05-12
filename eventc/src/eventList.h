@@ -75,12 +75,17 @@ class EventList{
   void Sort_Source();//sorts the EventList according to source
 
 
-  //Shuffling
+  //Shuffling - purely temporal
   void Shuffle_AddOffset(int seed);
-  void Shuffle_LinkSequence(int seed);
   void Shuffle_AllButTime(int seed);
   void Shuffle_Time(int seed);
   void Shuffle_LinkIETsKeepFirst(int seed);
+
+  //Shuffling - keeps connections, but changes weights
+  void Shuffle_LinkSequence(int seed);
+
+  //Shuffling - topological
+  void Shuffle_RandomNodes(int seed, bool allowSelfEdges=false); //Uniformly randomly selects new nodes (between 0 and maxnode - 1) for each event
 
   //Printing
   void PrintEvents();
@@ -344,7 +349,23 @@ void EventList<EventType>::Shuffle_Time(int seed){
 }
 
 
+template<class EventType> 
+void EventList<EventType>::Shuffle_RandomNodes(int seed, bool allowSelfEdges){
+  RandNumGen<> rands(seed);
+  int maxnode= this->GetNumberOfNodes();
+  if (maxnode==0) return; //There is only one node -> nothing can be done.
+  
+  for(size_t i = 0; i < this->size-1;i++){
+    size_t source,destination;
+    do{
+      source=rands.next(maxnode);
+      destination=rands.next(maxnode);
+    } while((!allowSelfEdges) && source==destination); //We might not want self edges.
 
+    this->events[i].source=source;
+    this->events[i].dest=destination;
+  }  
+}
 
 
 //--------- Constructor
