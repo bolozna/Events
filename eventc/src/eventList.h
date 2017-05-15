@@ -26,12 +26,14 @@
 
 template<class ElementType>
 void shuffle_vector(vector<ElementType> &v, RandNumGen<> &r){
-  for(size_t i = 0; i < v.size()-1;i++){
-    size_t j=i+rand()%(v.size()-i);
-    ElementType tempValue;
-    tempValue=v[i];
-    v[i]=v[j];
-    v[j]=tempValue;
+  if (v.size()!=0){
+    for(size_t i = 0; i < v.size()-1;i++){
+      size_t j=i+r.next(v.size()-i);
+      ElementType tempValue;
+      tempValue=v[i];
+      v[i]=v[j];
+      v[j]=tempValue;
+    }
   }
 }
 
@@ -278,6 +280,7 @@ void EventList<EventType>::Shuffle_LinkIETsKeepFirst(int seed){
     //Build IET vector for each link
     EventType currentEdge=this->events[i];
     vector<timestamp> iets;
+    iets.clear();
     timestamp prevTime;
     int j=i;
     while(this->events[j].source==currentEdge.source && this->events[j].dest==currentEdge.dest && j<events.size()){
