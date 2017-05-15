@@ -6,7 +6,7 @@ TEST(TestSuite, RunningAllShufflingMethods) {
   // This is just to test that everything compiles and runs.
   // Results are not checked.
 
-    EventList<Event_T> testList = EventList<Event_T>(5);
+  EventList<Event_T> testList = EventList<Event_T>(5,0,7);
     testList[0].source = 0;
     testList[0].dest = 1;
     testList[0].setTime(1);
@@ -27,6 +27,7 @@ TEST(TestSuite, RunningAllShufflingMethods) {
     testList.Shuffle_AllButTime(1);
     testList.Shuffle_Time(1);
     //testList.Shuffle_LinkIETsKeepFirst(1);
+    testList.Shuffle_UniformlyRandomTimes(1);
 
     testList.Shuffle_LinkSequence(1);
 

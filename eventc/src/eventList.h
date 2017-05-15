@@ -80,6 +80,7 @@ class EventList{
   void Shuffle_AllButTime(int seed);
   void Shuffle_Time(int seed);
   void Shuffle_LinkIETsKeepFirst(int seed);
+  void Shuffle_UniformlyRandomTimes(int seed);
 
   //Shuffling - keeps connections, but changes weights
   void Shuffle_LinkSequence(int seed);
@@ -339,13 +340,24 @@ void EventList<EventType>::Shuffle_Time(int seed){
   timestamp timeWindow=this->GetTimeWindowSize();
   
 
-  for(size_t i = 0; i < this->size-1;i++){
+  for(size_t i = 0; i < this->size;i++){
     size_t j=i+rands.next(this->size-i);
     timestamp tempTime=this->events[i].getTime();
     this->events[i].setTime(this->events[j].getTime());
     this->events[j].setTime(tempTime);
   }
  
+}
+
+
+template<class EventType> 
+void EventList<EventType>::Shuffle_UniformlyRandomTimes(int seed){
+  RandNumGen<> rands((float) seed);
+
+  for(size_t i = 0; i < this->size;i++){
+    timestamp newtime=this->startTime+rands.next(this->totalTime-this->startTime);
+    this->events[i].setTime(newtime);
+  }
 }
 
 
