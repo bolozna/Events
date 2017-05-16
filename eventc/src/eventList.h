@@ -83,12 +83,16 @@ class EventList{
   void Shuffle_Time(int seed);
   void Shuffle_LinkIETsKeepFirst(int seed);
   void Shuffle_UniformlyRandomTimes(int seed);
+  void Shuffle_UniformlyRandomTimesKeepLinkEnds(int seed);
 
   //Shuffling - keeps connections, but changes weights
   void Shuffle_LinkSequence(int seed);
 
   //Shuffling - topological
   void Shuffle_RandomNodes(int seed, bool allowSelfEdges=false); //Uniformly randomly selects new nodes (between 0 and maxnode - 1) for each event
+
+  //Shuffle interval limited by indices
+  void ShuffleBetween_UniformlyRandomTimesKeepLinkEnds(size_t index1, size_t index2,RandNumGen<> &rands);
 
   //Printing
   void PrintEvents();
@@ -380,6 +384,41 @@ void EventList<EventType>::Shuffle_RandomNodes(int seed, bool allowSelfEdges){
     this->events[i].source=source;
     this->events[i].dest=destination;
   }  
+}
+
+
+template<class EventType> 
+void EventList<EventType>::Shuffle_UniformlyRandomTimesKeepLinkEnds(int seed){
+  RandNumGen<> rands((timestamp) seed);
+  size_t i=0;
+  while(i<events.size()){
+    //find the index where this edge ends
+    EventType currentEdge=this->events[i];
+    size_t j=i;
+    while(this->events[j].source==currentEdge.source && this->events[j].dest==currentEdge.dest && j<events.size()){
+      j++;
+    }
+
+    this->ShuffleBetween_UniformlyRandomTimesKeepLinkEnds(i,j,rands);
+    i++;
+  }
+}
+
+
+//--------- Shuffling intervals between two indices
+
+// The sequence between index1 and index2 needs to be sorted by time.
+template<class EventType> 
+void EventList<EventType>::ShuffleBetween_UniformlyRandomTimesKeepLinkEnds(size_t index1, size_t index2,RandNumGen<> &rands){
+  timestamp startTime=this->events[index1].getTime();
+  timestamp endTime=this->events[index2].getTime();
+
+  if (index1+1<index2){ //otherwise there is nothing to randomize
+    for(size_t i = index1+1; i < index2;i++){
+      timestamp newtime=startTime+rands.next(endTime-startTime);
+      this->events[i].setTime(newtime);
+    }
+  }
 }
 
 

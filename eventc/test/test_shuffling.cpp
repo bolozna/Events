@@ -28,6 +28,7 @@ TEST(TestSuite, RunningAllShufflingMethods) {
     testList.Shuffle_Time(1);
     testList.Shuffle_LinkIETsKeepFirst(1);
     testList.Shuffle_UniformlyRandomTimes(1);
+    testList.Shuffle_UniformlyRandomTimesKeepLinkEnds(1);
 
     testList.Shuffle_LinkSequence(1);
 
