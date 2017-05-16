@@ -19,9 +19,33 @@
 #include <vector>
 #include <map>
 #include <deque>
+#include <unordered_set>
 #include "event.h"
 #include "../../../lcelib/Randgens.H"
 #include "event_policy_classes/timeStampPolicies.h"
+
+
+// We want to hash pairs. Why is this not part of the STD? 
+template <class T>
+inline void hash_combine(std::size_t& seed, const T& v)
+{
+    std::hash<T> hasher;
+    seed ^= hasher(v) + 0x9e3779b9 + (seed<<6) + (seed>>2);
+}
+namespace std{
+  template<typename S, typename T> struct hash<pair<S, T>>
+  {
+    inline size_t operator()(const pair<S, T> & v) const
+    {
+      size_t seed = 0;
+      ::hash_combine(seed, v.first);
+      ::hash_combine(seed, v.second);
+      return seed;
+    }
+  };
+}
+
+
 
 
 template<class ElementType>
@@ -87,6 +111,7 @@ class EventList{
 
   //Shuffling - keeps connections, but changes weights
   void Shuffle_LinkSequence(int seed);
+  void Shuffle_EventsToRandomLinks(int seed); //For each event randomly selects new source and destination pair from all links. (Keeps the aggregated network)
 
   //Shuffling - topological
   void Shuffle_RandomNodes(int seed, bool allowSelfEdges=false); //Uniformly randomly selects new nodes (between 0 and maxnode - 1) for each event
@@ -365,6 +390,33 @@ void EventList<EventType>::Shuffle_UniformlyRandomTimes(int seed){
     timestamp newtime=this->startTime+rands.next(this->totalTime-this->startTime);
     this->events[i].setTime(newtime);
   }
+}
+
+
+template<class EventType> 
+void EventList<EventType>::Shuffle_EventsToRandomLinks(int seed){
+  // This version doesn't assume anything about the order. Can also be implemented
+  // slightly faster if source-destination sorted.
+  unordered_set<pair<nodeindex,nodeindex> > edges;
+  for(size_t i = 0; i < this->size;i++){
+    edges.insert(make_pair(this->events[i].getSource(),this->events[i].getDest()));
+  }
+
+  //copy the content of the set to a vector
+  vector<pair<nodeindex,nodeindex> > edge_list(edges.begin(),edges.end());
+
+  RandNumGen<> rands(seed);
+
+  for(size_t i = 0; i < this->size;i++){
+    size_t linkIndex=rands.next(edge_list.size());
+    this->events[i].source=edge_list[linkIndex].first;
+    this->events[i].dest=edge_list[linkIndex].second;
+  }
+  
+  // Note that this might leave some edges empty and some of them might be lost.
+  // One could define this shuffling in a way that each edges gets at least one
+  // event.
+
 }
 
 
