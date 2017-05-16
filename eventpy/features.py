@@ -352,7 +352,7 @@ features_aggregated={"number_of_contacts_on_links":get_number_of_contacts_on_lin
                      "number_of_contacts_on_nodes":get_number_of_contacts_on_nodes,
                      "total_duration_on_nodes":get_total_duration_on_nodes}
 features_all.update(features_aggregated)
-feature_symbols.update({"number_of_contacts_on_links":{r"n"},
+feature_symbols.update({"number_of_contacts_on_links":r"n",
                         "total_duration_on_links":r"w",
                         "number_of_contacts_on_nodes":r"a",
                         "total_duration_on_nodes":r"s"})
