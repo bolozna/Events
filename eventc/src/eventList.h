@@ -22,6 +22,9 @@
 #include <unordered_set>
 #include "event.h"
 #include "../../../lcelib/Randgens.H"
+#include "../../../lcelib/Nets.H"
+#include "../../../lcelib/nets/NetExtras.H"
+#include "../../../lcelib/nets/Randomizer.H"
 #include "event_policy_classes/timeStampPolicies.h"
 
 
@@ -33,7 +36,7 @@ inline void hash_combine(std::size_t& seed, const T& v)
     seed ^= hasher(v) + 0x9e3779b9 + (seed<<6) + (seed>>2);
 }
 namespace std{
-  template<typename S, typename T> struct hash<pair<S, T>>
+  template<typename S, typename T> struct hash<pair<S, T> >
   {
     inline size_t operator()(const pair<S, T> & v) const
     {
@@ -73,6 +76,7 @@ class EventList{
   bool tSorted;
   bool sSorted;
   void SwapLinkSequences(size_t index1,size_t index2);
+  void SetNewTopology(vector<pair<nodeindex,nodeindex> > & edgeList);
 
  public:
   void SetSizeByFile(char* fileName); //Counts the number of rows in a file and sets the size of this list to match it
@@ -115,6 +119,7 @@ class EventList{
 
   //Shuffling - topological
   void Shuffle_RandomNodes(int seed, bool allowSelfEdges=false); //Uniformly randomly selects new nodes (between 0 and maxnode - 1) for each event
+  void Shuffle_UndirectedConfigurationModel(int seed); 
 
   //Shuffle interval limited by indices
   void ShuffleBetween_UniformlyRandomTimesKeepLinkEnds(size_t index1, size_t index2,RandNumGen<> &rands);
@@ -294,6 +299,24 @@ void EventList<EventType>::SwapLinkSequences(size_t index1,size_t index2){
      
 }
 
+template<class EventType>
+void EventList<EventType>::SetNewTopology(vector<pair<nodeindex,nodeindex> > & edgeList){
+  size_t i=0;
+  size_t edgeIndex=0;
+  while(i<events.size()){
+    EventType currentEdge=this->events[i];
+    while(this->events[i].source==currentEdge.source && this->events[i].dest==currentEdge.dest){
+      this->events[i].source=edgeList[edgeIndex].first;
+      this->events[i].dest=edgeList[edgeIndex].second;
+      i++;
+    }
+    edgeIndex++;
+  }  
+
+}
+
+
+
 template<class EventType> 
 void EventList<EventType>::Shuffle_LinkIETsKeepFirst(int seed){
   //Check that the eventlist is properly sorted.
@@ -437,6 +460,33 @@ void EventList<EventType>::Shuffle_RandomNodes(int seed, bool allowSelfEdges){
     this->events[i].dest=destination;
   }  
 }
+
+template<class EventType> 
+void EventList<EventType>::Shuffle_UndirectedConfigurationModel(int seed){
+  // Needs to be source-dest sorted and node-normalized
+  SymmNet<float> net;
+  for(size_t i = 0; i < this->size;i++){
+    net[this->events[i].getSource()][this->events[i].getDest()]=1.0;
+  }
+
+  RandNumGen<> rands(seed);
+  
+  randomize(net,rands,10,15);
+
+  vector<pair<nodeindex,nodeindex> > edgeList;
+  for (nodeindex i=0;i<net.size();++i){
+    for (SymmNet<float>::edge_iterator j=net[i].begin(); !j.finished(); ++j) {
+      nodeindex node2=(nodeindex) *j;
+      if (i<node2){
+	edgeList.push_back(make_pair(i,node2));
+      }
+    }
+  }
+
+  shuffle_vector(edgeList,rands);
+
+  this->SetNewTopology(edgeList);
+} 
 
 
 template<class EventType> 

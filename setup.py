@@ -21,7 +21,8 @@ class CustomBuild(build):
 
 
 eventpy_module = Extension('eventpy._eventpy_module', ['eventpy/eventpy_module.i'],
-                           swig_opts=["-c++"]
+                           swig_opts=["-c++"],
+                           extra_compile_args=["-std=c++11"]
                            )
 
 setup(name='eventpy',

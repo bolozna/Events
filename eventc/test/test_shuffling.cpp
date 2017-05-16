@@ -36,5 +36,7 @@ TEST(TestSuite, RunningAllShufflingMethods) {
     testList.Shuffle_RandomNodes(1,false);
     testList.Shuffle_RandomNodes(1,true);
     
+    //testList.Shuffle_UndirectedConfigurationModel(1,true);
+
 }
 
