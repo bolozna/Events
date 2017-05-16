@@ -65,6 +65,36 @@ void shuffle_vector(vector<ElementType> &v, RandNumGen<> &r){
 }
 
 
+template<class ElementType>
+void sample_without_replacement(vector<ElementType> &v,size_t n, size_t k,RandNumGen<> &r){ 
+  v.reserve(k);
+  if(n<2*k || n<100){ //dense case
+    vector<size_t> all;
+    all.reserve(n);
+    for (size_t i=0;i<n;i++){
+      all.push_back(i);
+    }
+
+    for(size_t i = 0; i < k;i++){
+      size_t j=i+r.next(all.size()-i);
+      v.push_back(all[j]);
+      all[j]=all[i];
+    }
+  }else{ //sparse case
+    unordered_set<size_t> selected;
+    size_t i=0;
+    while(i<k){      
+      size_t candidate=r.next(n);
+      if (selected.count(candidate)==0){
+	v.push_back(candidate);
+	i++;
+	selected.insert(candidate);
+      }
+    }
+    }
+}
+
+
 template<class EventType> 
 class EventList{
  private:
@@ -120,9 +150,11 @@ class EventList{
   //Shuffling - topological
   void Shuffle_RandomNodes(int seed, bool allowSelfEdges=false); //Uniformly randomly selects new nodes (between 0 and maxnode - 1) for each event
   void Shuffle_UndirectedConfigurationModel(int seed); 
+  void Shuffle_NodeIdentitiesInWindows(int seed,timestamp windowWidth=1,bool onlyActive=true);
 
   //Shuffle interval limited by indices
   void ShuffleBetween_UniformlyRandomTimesKeepLinkEnds(size_t index1, size_t index2,RandNumGen<> &rands);
+  void ShuffleBetween_NodeIdentities(size_t index1, size_t index2,RandNumGen<> &rands,bool onlyActive=true);
 
   //Printing
   void PrintEvents();
@@ -471,7 +503,13 @@ void EventList<EventType>::Shuffle_UndirectedConfigurationModel(int seed){
 
   RandNumGen<> rands(seed);
   
-  randomize(net,rands,10,15);
+  int limit=15;
+  int rounds=10;
+  if (net.size()>limit){
+    limit=net.size();
+  }
+    
+  randomize(net,rands,rounds,limit);
 
   vector<pair<nodeindex,nodeindex> > edgeList;
   for (nodeindex i=0;i<net.size();++i){
@@ -502,9 +540,29 @@ void EventList<EventType>::Shuffle_UniformlyRandomTimesKeepLinkEnds(int seed){
     }
 
     this->ShuffleBetween_UniformlyRandomTimesKeepLinkEnds(i,j,rands);
-    i++;
+    i=j;
   }
 }
+
+template<class EventType>
+void EventList<EventType>::Shuffle_NodeIdentitiesInWindows(int seed,timestamp windowWidth,bool onlyActive){
+  this->Sort_Time(); //Needs to be time sorted. Remains in this order after shuffling.
+
+  RandNumGen<> rands(seed);
+
+  size_t i=0;
+  while(i<events.size()){
+    //find the index where this edge ends
+    EventType currentEdge=this->events[i];
+    size_t j=i;
+    while(this->events[j].getTime()<currentEdge.getTime()+windowWidth && j<events.size()){
+      j++;
+    }
+    this->ShuffleBetween_NodeIdentities(i,j,rands,onlyActive);
+    i=j;
+  }
+}
+
 
 
 //--------- Shuffling intervals between two indices
@@ -516,12 +574,53 @@ void EventList<EventType>::ShuffleBetween_UniformlyRandomTimesKeepLinkEnds(size_
   timestamp endTime=this->events[index2].getTime();
 
   if (index1+1<index2){ //otherwise there is nothing to randomize
-    for(size_t i = index1+1; i < index2;i++){
+    for(size_t i = index1+1; i < index2+1;i++){
       timestamp newtime=startTime+rands.next(endTime-startTime);
       this->events[i].setTime(newtime);
     }
   }
 }
+
+
+template<class EventType> 
+void EventList<EventType>::ShuffleBetween_NodeIdentities(size_t index1, size_t index2,RandNumGen<> &rands,bool onlyActive){
+  
+  //First get the active nodes
+  unordered_set<nodeindex> activeNodes;
+  for(size_t i = index1; i < index2;i++){
+    activeNodes.insert(this->events[i].getSource());
+    activeNodes.insert(this->events[i].getDest());
+  }
+
+  vector<size_t> newNodeNameList;
+  if (onlyActive){
+    //Make them into a list and shuffle
+    newNodeNameList.assign(activeNodes.begin(),activeNodes.end());
+    shuffle_vector(newNodeNameList,rands);
+  }else{
+    size_t nnodes=this->GetNumberOfNodes();
+    size_t sample=activeNodes.size();
+    sample_without_replacement(newNodeNameList,nnodes,sample,rands);
+  }
+
+  //Iterate over the set, and create a renaming map
+  size_t nodeIndex=0;
+  map<nodeindex,nodeindex> namePermutation;
+  
+  for (unordered_set<nodeindex>::iterator nodeIterator=activeNodes.begin();nodeIterator!=activeNodes.end();++nodeIterator){
+    namePermutation[*nodeIterator]=newNodeNameList[nodeIndex];
+    nodeIndex++;
+  }
+  
+  //Do the mapping
+  for(size_t i = index1; i < index2;i++){
+    this->events[i].source=namePermutation[this->events[i].getSource()];
+    this->events[i].dest=namePermutation[this->events[i].getDest()];
+  }  
+
+}
+
+
 
 
 //--------- Constructor
