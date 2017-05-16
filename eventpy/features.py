@@ -66,6 +66,9 @@ class SequenceOfSequencesFeature(SequenceFeature):
 
 
 
+def _graph_to_dict(graph):
+    d={"nodes":set(graph.nodes()),"edges":set(graph.edges())}
+    return d
 
 
 # Topological features
@@ -78,6 +81,14 @@ def get_unweighted_network(elist):
         g.add_edge(event.source,event.dest)
 
     return g    
+
+def get_unweighted_network_dict(elist):
+    """Returns unweighted aggregated network in a format where
+    two networks can be compared.
+    """
+    g=get_unweighted_network(elist)    
+    return _graph_to_dict(g)
+
 
 def get_degrees(elist):
     g=get_unweighted_network(elist)
@@ -205,6 +216,12 @@ def get_snapshots(elist):
         r[event.getTime()].add_edge(event.source,event.dest)
     return  r
 
+def get_snapshots_dicts(elist):
+    """Snapshot graphs as dicts
+    """
+    d=get_snapshots(elist)
+    return dict( ((k,_graph_to_dict(d[k])) for k in d ) )
+
 def get_snapshot_degrees(elist):
     r={}
     for time,net in get_snapshots(elist).iteritems():
@@ -314,7 +331,7 @@ features_all={}
 feature_symbols={}
 
 #topological
-features_topological={"unweighted_network":get_unweighted_network,
+features_topological={"unweighted_network":get_unweighted_network_dict,
                       "degrees":get_degrees,
                       "node_ccs":get_node_ccs,
                       "number_of_links":get_number_of_links,
@@ -342,7 +359,7 @@ feature_symbols.update({"number_of_contacts_on_links":{r"n"},
 
 
 #temporal
-features_temporal={"snapshots":get_snapshots,
+features_temporal={"snapshots":get_snapshots_dicts,
                    "times_links":get_times_links,
                    "first_times_links":get_first_times_links,
                    "last_times_links":get_last_times_links,
