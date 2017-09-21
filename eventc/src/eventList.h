@@ -20,6 +20,7 @@
 #include <map>
 #include <deque>
 #include <unordered_set>
+#include <unordered_map>
 #include "event.h"
 #include "../../../lcelib/Randgens.H"
 #include "../../../lcelib/Nets.H"
@@ -142,6 +143,7 @@ class EventList{
   void Shuffle_LinkIETsKeepFirst(int seed);
   void Shuffle_UniformlyRandomTimes(int seed);
   void Shuffle_UniformlyRandomTimesKeepLinkEnds(int seed);
+  void Shuffle_EqualWeightLinkSequence(int seed); // Swaps full event sequences between links that have same number of events
 
   //Shuffling - keeps connections, but changes weights
   void Shuffle_LinkSequence(int seed);
@@ -447,6 +449,58 @@ void EventList<EventType>::Shuffle_UniformlyRandomTimes(int seed){
   }
 }
 
+ // Swaps full event sequences between links that have same number of events
+ // This algorithm works for source-destination sorted event lists
+ template<class EventType>
+void EventList<EventType>::Shuffle_EqualWeightLinkSequence(int seed){
+  // We need to construct vectors of indices such that links corresponding 
+  // to those indices can be swapped inside each vector. These vectors are
+  // then shuffled and swapping done based on the shuffled order.
+  
+  //Check that the eventlist is properly sorted.
+  if (!this->IsSorted_SourceDest()) this->Sort_SourceDest();
+  
+  // Go through the event list, find start index for each link, find the
+  // number of events in it, and add the index to correct vector
+  unordered_map<uint, vector<size_t>* >  weight_to_index;
+  EventType & currentEvent = this->events[0];
+  size_t currentEventIndex=0;
+  for (size_t i=1; i<=this->size; i++){
+    if (i==this->size || currentEvent.source!=this->events[i].source || currentEvent.dest != this->events[i].dest){
+      uint weight = i - currentEventIndex; // Weight of the edge
+      
+      // Create vector for this weight if it doesn't exist
+      if(weight_to_index.count(weight)==0){
+        weight_to_index[weight]=new vector<size_t>;
+      }
+
+      // Add the index to the correct vector
+      weight_to_index[weight]->push_back(currentEventIndex);
+
+      // Update the current event and its index if not at the end
+      if(i!=this->size){
+        currentEvent=this->events[i];
+        currentEventIndex=i;
+      }
+    }
+  }
+
+  // Next we need to go through each index vector, and shuffle the links in them.
+  RandNumGen<> rands(seed);
+  for(typename unordered_map<uint,vector<size_t>* >::iterator i=weight_to_index.begin(); i!=weight_to_index.end();++i){
+    vector<size_t> & edgeIndices=*(i->second);
+    //shuffle edgeEvents list
+    for (size_t indexIndex=0;indexIndex<edgeIndices.size();indexIndex++){
+      size_t newIndexIndex=indexIndex+rands.next(edgeIndices.size()-indexIndex);
+      this->SwapLinkSequences(edgeIndices[indexIndex],edgeIndices[newIndexIndex]);
+      edgeIndices[newIndexIndex]=edgeIndices[indexIndex];
+    }
+
+    // Finally we free the memory we allocated in this function.
+    delete i->second;
+  }
+
+}
 
 template<class EventType> 
 void EventList<EventType>::Shuffle_EventsToRandomLinks(int seed){

@@ -30,6 +30,8 @@ TEST(TestSuite, RunningAllShufflingMethods) {
     testList.Shuffle_UniformlyRandomTimes(1);
     testList.Shuffle_UniformlyRandomTimesKeepLinkEnds(1);
 
+    testList.Shuffle_EqualWeightLinkSequence(1);
+
     testList.Shuffle_LinkSequence(1);
     testList.Shuffle_EventsToRandomLinks(1);
 
