@@ -1,0 +1,3 @@
+[submodule "lcelib"]
+	path = lcelib
+	url = git@github.com:CxAalto/lcelib.git
