@@ -6,10 +6,10 @@
  */
 
 #include "event.h"
-#include "../../../lcelib/Randgens.H"
-#include "../../../lcelib/Nets.H"
-#include "../../../lcelib/nets/NetExtras.H"
-#include "../../../lcelib/nets/Randomizer.H"
+#include "../../lcelib/Randgens.H"
+#include "../../lcelib/Nets.H"
+#include "../../lcelib/nets/NetExtras.H"
+#include "../../lcelib/nets/Randomizer.H"
 #include "event_policy_classes/timeStampPolicies.h"
 
 //Model where the size of the network is constrained but everything otherwise maximally random.

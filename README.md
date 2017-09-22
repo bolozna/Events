@@ -6,10 +6,9 @@ This is a library for analysing large-scale event-based networks. Main parts of 
 Installing and Requirements
 ---------------------------
 
-This library relies on LCELib for static network analysis. Fetch it from Github to the same directory where you have Events.
-
+This library relies on LCELib for static network analysis. It is included as a subrepository of Events, and to fetch it while cloning Events you should make sure that your Git client also fetches the subrepositories. You can do this by adding the "recursive" tag in the clone command:
 ```
-git clone git@github.com:CxAalto/lcelib.git
+git clone git@github.com:bolozna/Events.git --recursive
 ``` 
 
 If you want to use the Python version of this library (called eventpy), then you should install it using the setup.py script provided:

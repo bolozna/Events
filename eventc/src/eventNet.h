@@ -10,7 +10,7 @@
 #include <vector>
 #include <algorithm>
 #include "eventList.h"
-#include "../../../lcelib/Nets.H"
+#include "../../lcelib/Nets.H"
 #include "event_policy_classes/timeStampPolicies.h"
 
 using namespace std;

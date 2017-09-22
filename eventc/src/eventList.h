@@ -22,10 +22,10 @@
 #include <unordered_set>
 #include <unordered_map>
 #include "event.h"
-#include "../../../lcelib/Randgens.H"
-#include "../../../lcelib/Nets.H"
-#include "../../../lcelib/nets/NetExtras.H"
-#include "../../../lcelib/nets/Randomizer.H"
+#include "../../lcelib/Randgens.H"
+#include "../../lcelib/Nets.H"
+#include "../../lcelib/nets/NetExtras.H"
+#include "../../lcelib/nets/Randomizer.H"
 #include "event_policy_classes/timeStampPolicies.h"
 
 
