@@ -372,7 +372,7 @@ void EventList<EventType>::Shuffle_LinkIETsKeepFirst(int seed){
     while(this->events[j].source==currentEdge.source && this->events[j].dest==currentEdge.dest && j<events.size()){
       timestamp newTime=this->events[j].getTime();
       if (j!=i){
-	iets.push_back(prevTime-newTime);
+	      iets.push_back(newTime-prevTime);
       }
       prevTime=newTime;
       j++;
