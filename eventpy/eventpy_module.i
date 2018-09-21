@@ -21,6 +21,7 @@ static int exception_occured=0;
 %include "../eventc/src/event_policy_classes/timeStampPolicies.h"
 %include "../eventc/src/event_policy_classes/indexPolicies.h"
 %include "../eventc/src/event_policy_classes/kindPolicies.h"
+%include "../eventc/src/dynamics/spreading.h"
 
 //%rename(__str__) Event::getLongEventInformation;
 %extend Event {
@@ -75,7 +76,7 @@ static int exception_occured=0;
 %ignore EventList<T>::DAG;
 %template(EventList ## postfix) EventList<T>;
 %template(EventNet ## postfix) EventNet<T>;
-
+%template(InfectionProcess ## postfix) InfectionProcess<T>;
 
 %exception EventList<T>::__getitem__{
  $action

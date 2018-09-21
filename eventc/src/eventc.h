@@ -6,5 +6,6 @@
 #include "event.h"
 #include "eventList.h"
 #include "eventNet.h"
+#include "dynamics/spreading.h"
 
 #endif // EVENTC_EVENTC_H
